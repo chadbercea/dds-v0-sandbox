@@ -147,7 +147,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
 
         {/* Left Panel - Overlay (Sheet) */}
         <Sheet open={leftPanelOpen && !leftPanelPinned} onOpenChange={setLeftPanelOpen}>
-          <SheetContent side="left" className="w-80 p-0">
+          <SheetContent side="left" className="w-80 p-0 [&>button]:hidden">
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h3 className="font-medium">Left Panel</h3>
@@ -167,7 +167,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
 
         {/* Right Panel - Overlay (Sheet) */}
         <Sheet open={rightPanelOpen && !rightPanelPinned} onOpenChange={setRightPanelOpen}>
-          <SheetContent side="right" className="w-80 p-0">
+          <SheetContent side="right" className="w-80 p-0 [&>button]:hidden">
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h3 className="font-medium">Right Panel</h3>
