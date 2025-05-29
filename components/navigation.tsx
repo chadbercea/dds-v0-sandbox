@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { DockerLogo } from "@/public/logo"
+import Image from "next/image"
 
 export function Navigation() {
   const pathname = usePathname()
@@ -18,7 +18,7 @@ export function Navigation() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center space-x-2">
-              <DockerLogo className="h-8 w-8" />
+              <Image src="/logo/LogoPrimary.svg" alt="Docker Logo" width={32} height={32} className="h-8 w-8" />
               <span className="text-xl font-semibold text-gray-900">Docker</span>
             </Link>
 
