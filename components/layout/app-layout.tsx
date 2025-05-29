@@ -4,7 +4,7 @@ import { useState, createContext, useContext, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight, PanelLeft } from "lucide-react"
+import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight } from "lucide-react"
 
 interface LayoutContextType {
   leftPanelOpen: boolean
@@ -271,7 +271,7 @@ export function AppHeader() {
     <div className="h-14 px-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={toggleLeftPanel}>
-          <PanelLeft className="h-5 w-5" />
+          <Menu className="h-5 w-5" />
         </Button>
         <img src="/sub-marks/subMarkPrimary.svg" alt="Docker" className="h-8 w-auto" />
       </div>
