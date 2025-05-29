@@ -4,7 +4,7 @@ import { useState, createContext, useContext, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown } from "lucide-react"
+import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight } from "lucide-react"
 
 interface LayoutContextType {
   leftPanelOpen: boolean
@@ -214,7 +214,7 @@ export function AppHeader() {
 
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={toggleRightPanel}>
-          <Menu className="h-5 w-5" />
+          <PanelRight className="h-5 w-5" />
         </Button>
       </div>
     </div>
