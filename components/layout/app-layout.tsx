@@ -48,16 +48,26 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
   const toggleRightPanel = () => setRightPanelOpen(!rightPanelOpen)
 
   const toggleLeftPanelPin = () => {
-    setLeftPanelPinned(!leftPanelPinned)
-    if (!leftPanelPinned) {
-      setLeftPanelOpen(true) // Auto-open when pinning
+    const newPinnedState = !leftPanelPinned
+    setLeftPanelPinned(newPinnedState)
+    if (!newPinnedState) {
+      // Close the panel when unpinning
+      setLeftPanelOpen(false)
+    } else {
+      // Auto-open when pinning
+      setLeftPanelOpen(true)
     }
   }
 
   const toggleRightPanelPin = () => {
-    setRightPanelPinned(!rightPanelPinned)
-    if (!rightPanelPinned) {
-      setRightPanelOpen(true) // Auto-open when pinning
+    const newPinnedState = !rightPanelPinned
+    setRightPanelPinned(newPinnedState)
+    if (!newPinnedState) {
+      // Close the panel when unpinning
+      setRightPanelOpen(false)
+    } else {
+      // Auto-open when pinning
+      setRightPanelOpen(true)
     }
   }
 
