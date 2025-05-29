@@ -1,12 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Navigation } from "@/components/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Search, Play, Trash2, Download } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { Search, Play, Trash2, Download, MoreHorizontal } from "lucide-react"
 
 interface DockerImage {
   id: string
@@ -77,19 +74,19 @@ export default function ImagesPage() {
       image.tag.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedImages(filteredImages.map((image) => image.id))
-    } else {
+  const handleSelectAll = () => {
+    if (selectedImages.length === filteredImages.length && filteredImages.length > 0) {
       setSelectedImages([])
+    } else {
+      setSelectedImages(filteredImages.map((image) => image.id))
     }
   }
 
-  const handleSelectImage = (imageId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedImages([...selectedImages, imageId])
-    } else {
+  const handleSelectImage = (imageId: string) => {
+    if (selectedImages.includes(imageId)) {
       setSelectedImages(selectedImages.filter((id) => id !== imageId))
+    } else {
+      setSelectedImages([...selectedImages, imageId])
     }
   }
 
@@ -115,112 +112,169 @@ export default function ImagesPage() {
   }, 0)
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <header className="border-b bg-background">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center">
+            <Link href="/" className="mr-6">
+              <Image src="/sub-marks/subMarkPrimary.svg" alt="Docker" width={32} height={32} />
+            </Link>
+            <nav className="flex space-x-4">
+              <Link href="/" className="rounded px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
+                Containers
+              </Link>
+              <Link href="/images" className="rounded bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">
+                Images
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Images</h1>
-          <p className="mt-2 text-gray-600">Manage your Docker images</p>
+          <h1 className="text-3xl font-bold text-foreground">Images</h1>
+          <p className="mt-2 text-muted-foreground">Manage your Docker images</p>
         </div>
 
         {/* Stats */}
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-lg bg-white p-4 shadow">
-            <div className="text-2xl font-bold text-gray-900">{images.length}</div>
-            <div className="text-sm text-gray-600">Total Images</div>
+          <div className="rounded bg-card p-4 shadow">
+            <div className="text-2xl font-bold text-card-foreground">{images.length}</div>
+            <div className="text-sm text-muted-foreground">Total Images</div>
           </div>
-          <div className="rounded-lg bg-white p-4 shadow">
-            <div className="text-2xl font-bold text-green-600">{activeImages}</div>
-            <div className="text-sm text-gray-600">Active Images</div>
+          <div className="rounded bg-card p-4 shadow">
+            <div className="text-2xl font-bold text-primary">{activeImages}</div>
+            <div className="text-sm text-muted-foreground">Active Images</div>
           </div>
-          <div className="rounded-lg bg-white p-4 shadow">
-            <div className="text-2xl font-bold text-gray-600">{totalSize.toFixed(1)}MB</div>
-            <div className="text-sm text-gray-600">Total Size</div>
+          <div className="rounded bg-card p-4 shadow">
+            <div className="text-2xl font-bold text-card-foreground">{totalSize.toFixed(1)}MB</div>
+            <div className="text-sm text-muted-foreground">Total Size</div>
           </div>
         </div>
 
         {/* Controls */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
               placeholder="Search images..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="w-full rounded border-input bg-background px-9 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
           <div className="flex gap-2">
             {selectedImages.length > 0 && (
-              <Button variant="destructive" size="sm" onClick={handleDeleteSelected}>
+              <button
+                onClick={handleDeleteSelected}
+                className="inline-flex items-center justify-center rounded bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+              >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete Selected ({selectedImages.length})
-              </Button>
+              </button>
             )}
-            <Button variant="outline" size="sm">
+            <button className="inline-flex items-center justify-center rounded border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground">
               <Download className="mr-2 h-4 w-4" />
               Pull Image
-            </Button>
+            </button>
           </div>
         </div>
 
         {/* Images Table */}
-        <div className="overflow-hidden rounded-lg bg-white shadow">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="overflow-hidden rounded bg-card shadow">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted">
               <tr>
                 <th className="px-6 py-3 text-left">
-                  <Checkbox
+                  <input
+                    type="checkbox"
                     checked={selectedImages.length === filteredImages.length && filteredImages.length > 0}
-                    onCheckedChange={handleSelectAll}
+                    onChange={handleSelectAll}
+                    className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Repository
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Tag</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Tag
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Image ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Created
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Size</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Size
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-border bg-card">
               {filteredImages.map((image) => (
-                <tr key={image.id} className="hover:bg-gray-50">
+                <tr key={image.id} className="hover:bg-muted/50">
                   <td className="px-6 py-4">
-                    <Checkbox
+                    <input
+                      type="checkbox"
                       checked={selectedImages.includes(image.id)}
-                      onCheckedChange={(checked) => handleSelectImage(image.id, checked as boolean)}
+                      onChange={() => handleSelectImage(image.id)}
+                      className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                     />
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{image.repository}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{image.tag}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500 font-mono">{image.imageId.substring(0, 12)}...</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{image.created}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{image.size}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-card-foreground">{image.repository}</td>
                   <td className="px-6 py-4">
-                    <Badge variant={image.status === "active" ? "default" : "secondary"}>{image.status}</Badge>
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      {image.tag}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 font-mono text-sm text-muted-foreground">
+                    {image.imageId.substring(0, 12)}...
+                  </td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">{image.created}</td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">{image.size}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        image.status === "active"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-secondary text-secondary-foreground"
+                      }`}
+                    >
+                      {image.status}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-right text-sm font-medium">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleRunImage(image.id)}>
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => handleRunImage(image.id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground"
+                        title="Run image"
+                      >
                         <Play className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDeleteImage(image.id)}>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteImage(image.id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        title="Delete image"
+                      >
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                      </button>
+                      <button
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        title="More options"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -230,7 +284,7 @@ export default function ImagesPage() {
 
           {filteredImages.length === 0 && (
             <div className="py-12 text-center">
-              <p className="text-gray-500">No images found matching your search.</p>
+              <p className="text-muted-foreground">No images found matching your search.</p>
             </div>
           )}
         </div>
