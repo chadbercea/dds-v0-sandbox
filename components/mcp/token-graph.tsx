@@ -5,7 +5,7 @@ import { Command } from "lucide-react"
 
 export function TokenGraph() {
   return (
-    <div className="p-5">
+    <div className="p-5 h-screen">
       <Card className="w-full h-full rounded-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
