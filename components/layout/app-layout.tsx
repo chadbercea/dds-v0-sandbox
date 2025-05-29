@@ -4,7 +4,7 @@ import { useState, createContext, useContext, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight } from "lucide-react"
+import { X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight, PanelLeft } from "lucide-react"
 
 interface LayoutContextType {
   leftPanelOpen: boolean
@@ -12,11 +12,15 @@ interface LayoutContextType {
   leftPanelPinned: boolean
   rightPanelPinned: boolean
   bottomPanelExpanded: boolean
+  leftPanelWidth: number
+  rightPanelWidth: number
   toggleLeftPanel: () => void
   toggleRightPanel: () => void
   toggleLeftPanelPin: () => void
   toggleRightPanelPin: () => void
   toggleBottomPanel: () => void
+  setLeftPanelWidth: (width: number) => void
+  setRightPanelWidth: (width: number) => void
 }
 
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined)
@@ -43,6 +47,8 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
   const [leftPanelPinned, setLeftPanelPinned] = useState(false)
   const [rightPanelPinned, setRightPanelPinned] = useState(false)
   const [bottomPanelExpanded, setBottomPanelExpanded] = useState(false)
+  const [leftPanelWidth, setLeftPanelWidth] = useState(320) // md default
+  const [rightPanelWidth, setRightPanelWidth] = useState(320) // md default
 
   const toggleLeftPanel = () => setLeftPanelOpen(!leftPanelOpen)
   const toggleRightPanel = () => setRightPanelOpen(!rightPanelOpen)
@@ -73,17 +79,59 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
 
   const toggleBottomPanel = () => setBottomPanelExpanded(!bottomPanelExpanded)
 
+  // Resize logic
+  const handleResize = (panelSide: "left" | "right", startX: number, startWidth: number) => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const delta = panelSide === "left" ? e.clientX - startX : startX - e.clientX
+      let newWidth = startWidth + delta
+
+      // Constrain width
+      newWidth = Math.max(200, Math.min(480, newWidth))
+
+      // Snap to presets
+      const presets = [240, 320, 400] // sm, md, lg
+      for (const preset of presets) {
+        if (Math.abs(newWidth - preset) < 20) {
+          newWidth = preset
+          break
+        }
+      }
+
+      if (panelSide === "left") {
+        setLeftPanelWidth(newWidth)
+      } else {
+        setRightPanelWidth(newWidth)
+      }
+    }
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
+      document.body.style.userSelect = ""
+      document.body.style.cursor = ""
+    }
+
+    document.addEventListener("mousemove", handleMouseMove)
+    document.addEventListener("mouseup", handleMouseUp)
+    document.body.style.userSelect = "none"
+    document.body.style.cursor = "col-resize"
+  }
+
   const contextValue: LayoutContextType = {
     leftPanelOpen,
     rightPanelOpen,
     leftPanelPinned,
     rightPanelPinned,
     bottomPanelExpanded,
+    leftPanelWidth,
+    rightPanelWidth,
     toggleLeftPanel,
     toggleRightPanel,
     toggleLeftPanelPin,
     toggleRightPanelPin,
     toggleBottomPanel,
+    setLeftPanelWidth,
+    setRightPanelWidth,
   }
 
   return (
@@ -96,7 +144,10 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
         <div className="flex-1 flex overflow-hidden">
           {/* Left Panel - Pinned */}
           {leftPanelPinned && (
-            <div className="w-80 border-r bg-background flex-shrink-0 transition-all duration-300 ease-in-out">
+            <div
+              className="border-r bg-background flex-shrink-0 transition-all duration-300 ease-in-out relative"
+              style={{ width: leftPanelWidth }}
+            >
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b flex items-center justify-between">
                   <h3 className="font-medium">Left Panel</h3>
@@ -106,6 +157,11 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
                 </div>
                 <div className="flex-1 overflow-auto">{leftPanel}</div>
               </div>
+              {/* Resize Handle */}
+              <div
+                className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-border transition-colors"
+                onMouseDown={(e) => handleResize("left", e.clientX, leftPanelWidth)}
+              />
             </div>
           )}
 
@@ -141,7 +197,10 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
 
           {/* Right Panel - Pinned */}
           {rightPanelPinned && (
-            <div className="w-80 border-l bg-background flex-shrink-0 transition-all duration-300 ease-in-out">
+            <div
+              className="border-l bg-background flex-shrink-0 transition-all duration-300 ease-in-out relative"
+              style={{ width: rightPanelWidth }}
+            >
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b flex items-center justify-between">
                   <h3 className="font-medium">Right Panel</h3>
@@ -151,13 +210,18 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
                 </div>
                 <div className="flex-1 overflow-auto">{rightPanel}</div>
               </div>
+              {/* Resize Handle */}
+              <div
+                className="absolute top-0 left-0 w-1 h-full cursor-col-resize hover:bg-border transition-colors"
+                onMouseDown={(e) => handleResize("right", e.clientX, rightPanelWidth)}
+              />
             </div>
           )}
         </div>
 
         {/* Left Panel - Overlay (Sheet) */}
         <Sheet open={leftPanelOpen && !leftPanelPinned} onOpenChange={setLeftPanelOpen}>
-          <SheetContent side="left" className="w-80 p-0 [&>button]:hidden">
+          <SheetContent side="left" className="p-0 [&>button]:hidden" style={{ width: leftPanelWidth }}>
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h3 className="font-medium">Left Panel</h3>
@@ -177,7 +241,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
 
         {/* Right Panel - Overlay (Sheet) */}
         <Sheet open={rightPanelOpen && !rightPanelPinned} onOpenChange={setRightPanelOpen}>
-          <SheetContent side="right" className="w-80 p-0 [&>button]:hidden">
+          <SheetContent side="right" className="p-0 [&>button]:hidden" style={{ width: rightPanelWidth }}>
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h3 className="font-medium">Right Panel</h3>
@@ -207,7 +271,7 @@ export function AppHeader() {
     <div className="h-14 px-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={toggleLeftPanel}>
-          <Menu className="h-5 w-5" />
+          <PanelLeft className="h-5 w-5" />
         </Button>
         <img src="/sub-marks/subMarkPrimary.svg" alt="Docker" className="h-8 w-auto" />
       </div>
