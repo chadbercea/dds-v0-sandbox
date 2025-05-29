@@ -18,7 +18,7 @@ export function Navigation() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/logo/LogoPrimary.svg" alt="Docker Logo" width={32} height={32} className="h-8 w-8" />
+              <Image src="/sub-marks/subMarkPrimary.svg" alt="Docker Logo" width={32} height={32} className="h-8 w-8" />
               <span className="text-xl font-semibold text-gray-900">Docker</span>
             </Link>
 
