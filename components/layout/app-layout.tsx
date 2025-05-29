@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Separator } from "@/components/ui/separator"
+import { Settings, LogOut, User, CreditCard } from "lucide-react"
 
 interface LayoutContextType {
   leftPanelOpen: boolean
@@ -39,6 +44,69 @@ interface AppLayoutProps {
   leftPanel?: ReactNode
   rightPanel?: ReactNode
   bottomPanel?: ReactNode
+}
+
+function UserAccountWidget() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <div className="p-3 border-t bg-background cursor-pointer hover:bg-muted/50 transition-colors">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/placeholder.svg?height=32&width=32" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">John Doe</p>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  Pro
+                </Badge>
+                <span className="text-xs text-muted-foreground truncate">Docker Team</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent side="right" align="end" className="w-64 p-0">
+        <div className="p-4">
+          <div className="flex items-center gap-3 mb-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src="/placeholder.svg?height=40&width=40" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium">John Doe</p>
+              <p className="text-sm text-muted-foreground">john@docker.com</p>
+            </div>
+          </div>
+          <Separator className="mb-3" />
+          <div className="space-y-1">
+            <Button variant="ghost" className="w-full justify-start h-8 px-2">
+              <User className="h-4 w-4 mr-2" />
+              Profile Settings
+            </Button>
+            <Button variant="ghost" className="w-full justify-start h-8 px-2">
+              <CreditCard className="h-4 w-4 mr-2" />
+              Billing & Plans
+            </Button>
+            <Button variant="ghost" className="w-full justify-start h-8 px-2">
+              <Settings className="h-4 w-4 mr-2" />
+              Preferences
+            </Button>
+            <Separator className="my-2" />
+            <Button
+              variant="ghost"
+              className="w-full justify-start h-8 px-2 text-red-600 hover:text-red-600 hover:bg-red-50"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
 }
 
 export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel }: AppLayoutProps) {
@@ -150,12 +218,13 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
             >
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b flex items-center justify-between">
-                  <h3 className="font-medium">Left Panel</h3>
+                  <h3 className="font-medium">Navigation</h3>
                   <Button variant="ghost" size="icon" onClick={toggleLeftPanelPin} className="h-8 w-8">
                     <PinOff className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="flex-1 overflow-auto">{leftPanel}</div>
+                <UserAccountWidget />
               </div>
               {/* Resize Handle */}
               <div
@@ -224,7 +293,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
           <SheetContent side="left" className="p-0 [&>button]:hidden" style={{ width: leftPanelWidth }}>
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="font-medium">Left Panel</h3>
+                <h3 className="font-medium">Navigation</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon" onClick={toggleLeftPanelPin} className="h-8 w-8">
                     <Pin className="h-4 w-4" />
@@ -235,6 +304,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
                 </div>
               </div>
               <div className="flex-1 overflow-auto">{leftPanel}</div>
+              <UserAccountWidget />
             </div>
           </SheetContent>
         </Sheet>
@@ -264,7 +334,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
 }
 
 // Header component with panel triggers
-export function AppHeader() {
+function AppHeader() {
   const { toggleLeftPanel, toggleRightPanel } = useLayout()
 
   return (
@@ -284,3 +354,4 @@ export function AppHeader() {
     </div>
   )
 }
+export { AppHeader }
