@@ -1,12 +1,24 @@
 "use client"
 
 import { createContext, useContext, useState, type ReactNode } from "react"
-import { Menu, ExternalLink, Github, Code, Palette, BookOpen, Rocket, MessageSquarePlus } from "lucide-react"
+import {
+  Menu,
+  ExternalLink,
+  Github,
+  Code,
+  Palette,
+  BookOpen,
+  Rocket,
+  MessageSquarePlus,
+  MoonStar,
+  Sun,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useTheme } from "next-themes"
 
 // Context for shared navigation state
 const NavigationContext = createContext<{
@@ -134,24 +146,35 @@ export function NavigationTrigger() {
 // App header component
 export function AppHeader() {
   const { setIsOpen } = useNavigation()
+  const { theme, setTheme } = useTheme()
 
   return (
-    <header className="h-20 flex items-center justify-between px-6">
+    <header className="h-20 flex items-center justify-between px-6 border-b">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setIsOpen(true)}>
-          <Menu className="h-6 w-6 text-white" />
+          <Menu className="h-6 w-6 text-foreground" />
           <span className="sr-only">Open menu</span>
         </Button>
 
         <div className="flex items-center gap-3">
-          <img src="/sub-marks/subMarkWhite.svg" alt="Docker" className="h-8" />
-          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-2 flex items-center h-5">
-            <span className="text-white text-xs font-medium leading-none">v0.dev+DDS</span>
+          <img src="/sub-marks/subMarkPrimary.svg" alt="Docker" className="h-8 dark:hidden" />
+          <img src="/sub-marks/subMarkWhite.svg" alt="Docker" className="h-8 hidden dark:block" />
+          <div className="bg-primary/10 dark:bg-white/20 backdrop-blur-sm border border-primary/30 dark:border-white/30 rounded-full px-2 flex items-center h-5">
+            <span className="text-primary dark:text-white text-xs font-medium leading-none">v0.dev+DDS</span>
           </div>
         </div>
       </div>
 
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="mr-2"
+        >
+          {theme === "dark" ? <Sun className="h-5 w-5" /> : <MoonStar className="h-5 w-5" />}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
         <Button variant="outline" size="sm">
           Documentation
         </Button>
