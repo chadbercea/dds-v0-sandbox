@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { DockerLogo } from "@/public/logo/docker-logo"
+import { DockerLogo } from "@/public/logo"
 
 export function Navigation() {
   const pathname = usePathname()
