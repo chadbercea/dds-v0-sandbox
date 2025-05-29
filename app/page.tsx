@@ -1,963 +1,617 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { AppHeader, NavigationTrigger } from "@/components/layout/app-header"
-import { Card, CardContent } from "@/components/ui/card"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Stepper } from "@/components/ui/stepper"
-import {
-  GitFork,
-  Zap,
-  Code,
-  Palette,
-  Layers,
-  Sparkles,
-  Copy,
-  Check,
-  Star,
-  Heart,
-  Bell,
-  Search,
-  Upload,
-  Maximize2,
-  Minimize2,
-  Rocket,
-  Github,
-  BookOpen,
-  ExternalLink,
-} from "lucide-react"
-import { SimpleChatBubbles } from "@/components/simple-chat-bubbles"
-import { DesignTokensShowcase } from "@/components/design-tokens-showcase"
-import { ConfettiOverlay } from "@/components/confetti-overlay"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
+import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Search,
+  Star,
+  Download,
+  Clock,
+  Users,
+  Brain,
+  Bot,
+  Database,
+  Globe,
+  Filter,
+  Heart,
+  MessageSquare,
+  Share,
+  BookOpen,
+  Cpu,
+  Network,
+  Layers,
+  Moon,
+  Sun,
+  Bell,
+  Settings,
+  Plus,
+  ChevronRight,
+  TrendingUp,
+  Award,
+  Sparkles,
+  Rocket,
+  Eye,
+  CheckCircle,
+} from "lucide-react"
 
-export default function HomePage() {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [showConfetti, setShowConfetti] = useState(false)
-  const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null)
-  const [showWelcomeModal, setShowWelcomeModal] = useState(true)
-  const [heartLiked, setHeartLiked] = useState(false)
-  const [containerRunning, setContainerRunning] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [volumeMounted, setVolumeMounted] = useState(false)
-  const [selectedImage, setSelectedImage] = useState("nginx:latest")
-  const [deploymentProgress, setDeploymentProgress] = useState(0)
-  const [largeIllustration, setLargeIllustration] = useState(false)
-  const [mediumIllustration, setMediumIllustration] = useState(false)
-  const [smallIllustration, setSmallIllustration] = useState(false)
-  const [sheetOpen, setSheetOpen] = useState(false)
+export default function DockerHubAI() {
+  const { toast } = useToast()
+  const [theme, setTheme] = useState<"light" | "dark">("light")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedSort, setSelectedSort] = useState("trending")
 
-  // Show welcome modal when component showcase loads
-  useEffect(() => {
-    if (currentStep === 3) {
-      setShowWelcomeModal(true)
-    }
-  }, [currentStep])
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light"
+    setTheme(newTheme)
+    document.documentElement.classList.toggle("dark", newTheme === "dark")
+  }
 
-  useEffect(() => {
-    if (containerRunning && deploymentProgress < 100) {
-      const timer = setTimeout(() => {
-        setDeploymentProgress((prev) => Math.min(prev + 10, 100))
-      }, 200)
-      return () => clearTimeout(timer)
-    }
-  }, [containerRunning, deploymentProgress])
-
-  const steps = [
+  const featuredImages = [
     {
-      title: "Welcome, Dockhand!",
-      content: "welcome",
+      id: 1,
+      name: "llama-3.2-vision-hdi",
+      description: "Advanced vision-language model with Human-Docker Interface for seamless AI integration",
+      author: "meta-ai",
+      downloads: "2.3M",
+      stars: 15420,
+      tags: ["HDI", "Vision", "LLM", "Meta"],
+      category: "hdi",
+      verified: true,
+      trending: true,
+      lastUpdated: "2 hours ago",
+      size: "4.2GB",
+      architecture: ["amd64", "arm64"],
+      aiCapabilities: ["vision", "text-generation", "multimodal"],
+      communityScore: 98,
     },
     {
-      title: "Learn v0",
-      content: "learn-v0",
+      id: 2,
+      name: "claude-3.5-mcp-server",
+      description: "Anthropic's Claude 3.5 with Model Context Protocol for enhanced AI agent communication",
+      author: "anthropic",
+      downloads: "1.8M",
+      stars: 12890,
+      tags: ["MCP", "Claude", "Agent", "Protocol"],
+      category: "mcp",
+      verified: true,
+      trending: true,
+      lastUpdated: "4 hours ago",
+      size: "6.1GB",
+      architecture: ["amd64"],
+      aiCapabilities: ["reasoning", "code-generation", "analysis"],
+      communityScore: 96,
     },
     {
-      title: "DDS Integration & Advanced Gen UI",
-      content: "dds-integration",
+      id: 3,
+      name: "openai-gpt4-hdi-toolkit",
+      description: "Complete GPT-4 toolkit with HDI bindings for rapid AI application development",
+      author: "openai",
+      downloads: "3.1M",
+      stars: 18750,
+      tags: ["HDI", "GPT-4", "Toolkit", "OpenAI"],
+      category: "hdi",
+      verified: true,
+      trending: false,
+      lastUpdated: "1 day ago",
+      size: "5.8GB",
+      architecture: ["amd64", "arm64"],
+      aiCapabilities: ["text-generation", "code-completion", "reasoning"],
+      communityScore: 99,
+    },
+    {
+      id: 4,
+      name: "mistral-7b-mcp-bridge",
+      description: "Mistral 7B with MCP bridge for distributed AI model orchestration",
+      author: "mistralai",
+      downloads: "890K",
+      stars: 8420,
+      tags: ["MCP", "Mistral", "Bridge", "Orchestration"],
+      category: "mcp",
+      verified: true,
+      trending: true,
+      lastUpdated: "6 hours ago",
+      size: "3.9GB",
+      architecture: ["amd64", "arm64"],
+      aiCapabilities: ["text-generation", "fine-tuning", "inference"],
+      communityScore: 94,
+    },
+    {
+      id: 5,
+      name: "stable-diffusion-hdi-xl",
+      description: "Stable Diffusion XL with HDI for seamless image generation workflows",
+      author: "stability-ai",
+      downloads: "1.2M",
+      stars: 9650,
+      tags: ["HDI", "Diffusion", "Image-Gen", "XL"],
+      category: "hdi",
+      verified: true,
+      trending: false,
+      lastUpdated: "12 hours ago",
+      size: "7.3GB",
+      architecture: ["amd64"],
+      aiCapabilities: ["image-generation", "style-transfer", "inpainting"],
+      communityScore: 92,
+    },
+    {
+      id: 6,
+      name: "gemini-pro-mcp-connector",
+      description: "Google's Gemini Pro with MCP connector for multi-agent AI systems",
+      author: "google-ai",
+      downloads: "756K",
+      stars: 7230,
+      tags: ["MCP", "Gemini", "Connector", "Multi-Agent"],
+      category: "mcp",
+      verified: true,
+      trending: true,
+      lastUpdated: "3 hours ago",
+      size: "4.7GB",
+      architecture: ["amd64"],
+      aiCapabilities: ["multimodal", "reasoning", "code-generation"],
+      communityScore: 95,
     },
   ]
 
-  const handlePrevious = () => {
-    setCurrentStep(Math.max(0, currentStep - 1))
-  }
-
-  const handleNext = () => {
-    if (currentStep === 2) {
-      setCurrentStep(3)
-      setShowConfetti(true)
-    } else {
-      setCurrentStep(Math.min(steps.length - 1, currentStep + 1))
-    }
-  }
-
-  const handleStepClick = (step: number) => {
-    setCurrentStep(step)
-  }
-
-  const handleBackToStepper = () => {
-    setCurrentStep(2)
-  }
-
-  const handleConfettiComplete = () => {
-    setShowConfetti(false)
-  }
-
-  const copyToClipboard = async (prompt: string) => {
-    try {
-      await navigator.clipboard.writeText(prompt)
-      setCopiedPrompt(prompt)
-      setTimeout(() => setCopiedPrompt(null), 2000)
-    } catch (err) {
-      console.error("Failed to copy text: ", err)
-    }
-  }
-
-  const componentCards = [
-    // Navigation card using the shared navigation component
-    {
-      title: "v0.dev+DDS Navigation",
-      prompt: "Create a v0.dev-style navigation header with DDS styling using shadcn/ui components",
-      component: (
-        <div className="flex items-center gap-2">
-          <NavigationTrigger />
-          <span className="text-sm text-muted-foreground">Click hamburger to open nav</span>
-        </div>
-      ),
-    },
-    // Rest of the cards remain the same...
-    {
-      title: "Primary Button",
-      prompt: "Create a primary button using shadcn/ui Button component",
-      component: <Button className="w-full">Get Started</Button>,
-    },
-    {
-      title: "Delete with Confirmation",
-      prompt: "Build a destructive button with double confirmation modal using shadcn/ui Dialog",
-      component: (
-        <>
-          <Button variant="destructive" className="w-full" onClick={() => setShowDeleteModal(true)}>
-            Delete Container
-          </Button>
-          <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-            <DialogContent className="sm:max-w-[400px]">
-              <DialogHeader>
-                <DialogTitle>Confirm Deletion</DialogTitle>
-                <DialogDescription>
-                  Are you sure you want to delete this container? This action cannot be undone.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={() => setShowDeleteModal(false)}>
-                  Delete
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </>
-      ),
-    },
-    {
-      title: "Heart Icon Toggle",
-      prompt: "Create a heart icon button that changes color when clicked using shadcn/ui Button",
-      component: (
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setHeartLiked(!heartLiked)}
-          className={heartLiked ? "text-pink-500 border-pink-500" : ""}
-        >
-          <Heart className={`h-4 w-4 ${heartLiked ? "fill-current" : ""}`} />
-        </Button>
-      ),
-    },
-    {
-      title: "Container Status Toggle",
-      prompt: "Build an interactive container status card with start/stop toggle using shadcn/ui Switch",
-      component: (
-        <Card className="w-full cursor-pointer hover:shadow-md transition-shadow rounded-[var(--border-radius)]">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${containerRunning ? "bg-green-500" : "bg-gray-400"}`} />
-                <span className="text-sm font-medium">{containerRunning ? "Running" : "Stopped"}</span>
-              </div>
-              <Switch
-                checked={containerRunning}
-                onCheckedChange={(checked) => {
-                  setContainerRunning(checked)
-                  if (checked) setDeploymentProgress(0)
-                }}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      ),
-    },
-    {
-      title: "Docker Image Selector",
-      prompt: "Create a Docker image selector dropdown using shadcn/ui Select component",
-      component: (
-        <Select value={selectedImage} onValueChange={setSelectedImage}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select image" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="nginx:latest">nginx:latest</SelectItem>
-            <SelectItem value="node:18-alpine">node:18-alpine</SelectItem>
-            <SelectItem value="postgres:15">postgres:15</SelectItem>
-            <SelectItem value="redis:7-alpine">redis:7-alpine</SelectItem>
-          </SelectContent>
-        </Select>
-      ),
-    },
-    {
-      title: "Volume Mount Toggle",
-      prompt: "Build a volume mounting interface using shadcn/ui Checkbox and labels",
-      component: (
-        <div className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Checkbox id="volume-mount" checked={volumeMounted} onCheckedChange={setVolumeMounted} />
-            <label htmlFor="volume-mount" className="text-sm font-medium">
-              Mount /data volume
-            </label>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {volumeMounted ? "Volume mounted at /data" : "No volumes mounted"}
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: "Deployment Progress",
-      prompt: "Show deployment progress using shadcn/ui Progress component with animations",
-      component: (
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs">
-            <span>Deploying...</span>
-            <span>{deploymentProgress}%</span>
-          </div>
-          <Progress value={deploymentProgress} className="w-full" />
-        </div>
-      ),
-    },
-    {
-      title: "Docker Services Tabs",
-      prompt: "Create service management tabs using shadcn/ui Tabs component",
-      component: (
-        <Tabs defaultValue="containers" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="containers">Containers</TabsTrigger>
-            <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="volumes">Volumes</TabsTrigger>
-          </TabsList>
-          <TabsContent value="containers" className="text-center py-2">
-            <p className="text-xs text-muted-foreground">3 running</p>
-          </TabsContent>
-          <TabsContent value="images" className="text-center py-2">
-            <p className="text-xs text-muted-foreground">12 images</p>
-          </TabsContent>
-          <TabsContent value="volumes" className="text-center py-2">
-            <p className="text-xs text-muted-foreground">5 volumes</p>
-          </TabsContent>
-        </Tabs>
-      ),
-    },
-    {
-      title: "Container Actions Menu",
-      prompt: "Build a container actions dropdown menu using shadcn/ui DropdownMenu with nested options",
-      component: (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full">
-              Container Actions
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Container Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <span>Start</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <span>Stop</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <span>Restart</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <span>Logs</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>
-                  <span>View Logs</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Download Logs</span>
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-    // Asset cards with toggle buttons
-    {
-      title: "Docker Logo",
-      prompt: "Display the Docker logo using the design system assets",
-      component: (
-        <div className="flex items-center justify-center p-4">
-          <img src="/logo/LogoPrimary.svg" alt="Docker Logo" className="w-full h-auto object-contain" />
-        </div>
-      ),
-    },
-    {
-      title: "Docker Submark - Small",
-      prompt: "Show the Docker submark logo in small size for compact layouts",
-      component: (
-        <div className="flex items-center justify-center p-4">
-          <img src="/sub-marks/subMarkPrimary.svg" alt="Docker Submark Small" className="h-6 w-auto object-contain" />
-        </div>
-      ),
-    },
-    {
-      title: "Docker Submark - Medium",
-      prompt: "Show the Docker submark logo in medium size for standard layouts",
-      component: (
-        <div className="flex items-center justify-center p-4">
-          <img src="/sub-marks/subMarkPrimary.svg" alt="Docker Submark Medium" className="h-12 w-auto object-contain" />
-        </div>
-      ),
-    },
-    {
-      title: "Docker Submark - Large",
-      prompt: "Show the Docker submark logo in large size with gradient background",
-      component: (
-        <div className="flex items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-sm">
-          <img src="/sub-marks/subMarkWhite.svg" alt="Docker Submark Large" className="h-16 w-auto object-contain" />
-        </div>
-      ),
-    },
-    {
-      title: "Large Illustration",
-      prompt: "Use large Docker product illustrations for hero sections",
-      component: (
-        <div className="space-y-3">
-          <div className="flex items-center justify-center p-4">
-            <img
-              src="/illustrations/Product Illustration/Lg/Mock Panels.png"
-              alt="Docker Large Illustration"
-              className={`w-full h-auto object-contain ${largeIllustration ? "scale-150 transform-gpu" : ""}`}
-              style={{ transformOrigin: "center" }}
-            />
-          </div>
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setLargeIllustration(!largeIllustration)}
-              className="flex items-center gap-1"
-            >
-              {largeIllustration ? (
-                <>
-                  <Minimize2 className="h-3 w-3" />
-                  <span>Normal Size</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 className="h-3 w-3" />
-                  <span>Enlarge</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: "Medium Illustration",
-      prompt: "Display medium-sized Docker illustrations for content sections",
-      component: (
-        <div className="space-y-3">
-          <div className="flex items-center justify-center p-4">
-            <img
-              src="/illustrations/Product Illustration/Md/Option Select.png"
-              alt="Docker Medium Illustration"
-              className={`w-full h-auto object-contain ${mediumIllustration ? "scale-150 transform-gpu" : ""}`}
-              style={{ transformOrigin: "center" }}
-            />
-          </div>
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setMediumIllustration(!mediumIllustration)}
-              className="flex items-center gap-1"
-            >
-              {mediumIllustration ? (
-                <>
-                  <Minimize2 className="h-3 w-3" />
-                  <span>Normal Size</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 className="h-3 w-3" />
-                  <span>Enlarge</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: "Small Illustration",
-      prompt: "Use small Docker illustrations for icons and compact spaces",
-      component: (
-        <div className="space-y-3">
-          <div className="flex items-center justify-center p-4">
-            <img
-              src="/illustrations/Product Illustration/Sm/Run Image.png"
-              alt="Docker Small Illustration"
-              className={`w-full h-auto object-contain ${smallIllustration ? "scale-150 transform-gpu" : ""}`}
-              style={{ transformOrigin: "center" }}
-            />
-          </div>
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSmallIllustration(!smallIllustration)}
-              className="flex items-center gap-1"
-            >
-              {smallIllustration ? (
-                <>
-                  <Minimize2 className="h-3 w-3" />
-                  <span>Normal Size</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 className="h-3 w-3" />
-                  <span>Enlarge</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      ),
-    },
-    // Continue with more enhanced cards...
-    {
-      title: "Secondary Button",
-      prompt: "Make a secondary button using shadcn/ui Button variant",
-      component: (
-        <Button variant="secondary" className="w-full">
-          Secondary
-        </Button>
-      ),
-    },
-    {
-      title: "Outline Button",
-      prompt: "Create an outline button using shadcn/ui Button variant",
-      component: (
-        <Button variant="outline" className="w-full">
-          Outline
-        </Button>
-      ),
-    },
-    {
-      title: "Button Group",
-      prompt: "Create a group of shadcn/ui buttons with different variants",
-      component: (
-        <div className="flex gap-2">
-          <Button size="sm">Save</Button>
-          <Button variant="outline" size="sm">
-            Cancel
-          </Button>
-        </div>
-      ),
-    },
-    {
-      title: "Card Component",
-      prompt: "Build a card using shadcn/ui Card with header and content",
-      component: (
-        <Card className="w-full rounded-[var(--border-radius)]">
-          <CardContent className="p-4">
-            <h4 className="font-medium mb-2">Card Title</h4>
-            <p className="text-sm text-muted-foreground">Card content goes here</p>
-          </CardContent>
-        </Card>
-      ),
-    },
-    {
-      title: "Icon-only Buttons",
-      prompt: "Create icon-only buttons using shadcn/ui Button icon size variant",
-      component: (
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <Bell className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <Star className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
-    {
-      title: "Button with Icon",
-      prompt: "Make a button with icon using shadcn/ui Button and Lucide icons",
-      component: (
-        <Button className="w-full">
-          <Upload className="h-4 w-4 mr-2" />
-          Upload File
-        </Button>
-      ),
-    },
+  const trendingSearches = [
+    "HDI vision models",
+    "MCP protocols",
+    "LLM inference",
+    "AI agents",
+    "multimodal AI",
+    "code generation",
   ]
 
-  const renderCardContent = (step: number) => {
-    if (step === 0) {
-      return (
-        <div className="flex h-full gap-6">
-          <div className="flex-1 flex flex-col space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <GitFork className="h-8 w-8 text-primary" />
-                <h4 className="font-medium">Find Project</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">Navigate to the Docker Design System project on v0.dev.</p>
-            </div>
+  const categories = [
+    { id: "all", name: "All Categories", icon: Globe, count: "12.4K" },
+    { id: "hdi", name: "HDI Models", icon: Brain, count: "5.2K" },
+    { id: "mcp", name: "MCP Protocols", icon: Network, count: "3.8K" },
+    { id: "llm", name: "Language Models", icon: MessageSquare, count: "2.1K" },
+    { id: "vision", name: "Computer Vision", icon: Eye, count: "1.9K" },
+    { id: "agents", name: "AI Agents", icon: Bot, count: "1.4K" },
+  ]
 
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Zap className="h-8 w-8 text-primary" />
-                <h4 className="font-medium">Fork Branch</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Click the cog icon and select "Fork Main Branch" to create your workspace.
-              </p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Rocket className="h-8 w-8 text-primary" />
-                <h4 className="font-medium">Start Building</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Chat with v0 to generate Docker-styled components instantly.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-stretch h-full">
-            <div className="w-full h-full">
-              <div className="rounded-lg overflow-hidden w-full h-full">
-                <div className="rounded-lg overflow-hidden border shadow-md h-full bg-muted/30 flex items-center justify-center">
-                  <img
-                    src="/v0-fork-gif.gif"
-                    alt="Fork project demo"
-                    className="w-full h-full object-cover opacity-0 transition-opacity duration-300"
-                    onLoad={(e) => {
-                      e.currentTarget.style.opacity = "1"
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    if (step === 1) {
-      return (
-        <div className="grid grid-cols-2 gap-6 h-full">
-          <div className="space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Zap className="h-6 w-6 text-primary" />
-                <h4 className="font-medium">AI-Powered Building</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Describe what you want to build in plain English. v0.dev generates React components using DDS tokens
-                with shadcn/ui.
-              </p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Code className="h-6 w-6 text-primary" />
-                <h4 className="font-medium">Instant Prototypes</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Type "Create a dashboard with user stats" in the v0.dev chat. Review the generated prototype, then push
-                directly to your GitHub branch.
-              </p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Palette className="h-6 w-6 text-primary" />
-                <h4 className="font-medium">Design System Ready</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Built with Docker Design System tokens and components. Consistent styling and behavior out of the box.
-              </p>
-            </div>
-          </div>
-
-          <div className="h-full">
-            <SimpleChatBubbles />
-          </div>
-        </div>
-      )
-    }
-
-    if (step === 2) {
-      return (
-        <div className="flex h-full gap-6">
-          <div className="flex-1 space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Layers className="h-5 w-5 text-primary" />
-                <h4 className="font-medium text-sm">App Tree Assets</h4>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Docker logos, icons, and illustrations ready to use. Just ask v0: "Add the Docker logo"
-              </p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Code className="h-5 w-5 text-primary" />
-                <h4 className="font-medium text-sm">shadcn/ui Components</h4>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Full component library knowledge. Request tables, forms, dialogs - it's all built-in.
-              </p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Palette className="h-5 w-5 text-primary" />
-                <h4 className="font-medium text-sm">DDS Foundation Tokens</h4>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Colors, typography, spacing - all Docker Design System tokens are pre-configured.
-              </p>
-            </div>
-
-            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <h4 className="font-medium text-sm text-primary">Deep Interactions</h4>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                <strong>v0.dev + DDS is fully versed!</strong> Complex interactions, animations, advanced patterns -
-                just ask.
-              </p>
-            </div>
-          </div>
-
-          <div className="w-1/3">
-            <DesignTokensShowcase />
-          </div>
-        </div>
-      )
-    }
-
-    return null
+  const handleSearch = () => {
+    toast({
+      title: "Searching AI Registry",
+      description: `Finding ${searchQuery || "all"} AI models and protocols...`,
+    })
   }
 
-  const typographyCard = {
-    title: "Typography Showcase",
-    prompt: "Display comprehensive typography examples using Docker Design System tokens",
-    component: (
-      <div className="space-y-4 text-left">
-        <div>
-          <h1 className="text-4xl font-bold font-heading mb-2">The quick brown fox</h1>
-          <p className="text-sm text-muted-foreground">H1 Heading - font-heading, text-4xl, font-bold</p>
-        </div>
-        <div>
-          <h2 className="text-2xl font-semibold font-heading mb-2">jumps over the lazy dog</h2>
-          <p className="text-sm text-muted-foreground">H2 Heading - font-heading, text-2xl, font-semibold</p>
-        </div>
-        <div>
-          <h3 className="text-lg font-medium font-heading mb-2">The five boxing wizards</h3>
-          <p className="text-sm text-muted-foreground">H3 Heading - font-heading, text-lg, font-medium</p>
-        </div>
-        <div>
-          <p className="text-base font-sans mb-2">
-            Body text using the Docker Design System font stack. Perfect for paragraphs and content.
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">Body Text - font-sans, text-base</p>
-        </div>
-        <div>
-          <a href="#" className="text-primary hover:underline font-medium">
-            This is a link example
-          </a>
-          <p className="text-sm text-muted-foreground mt-1">Link - text-primary, hover:underline</p>
-        </div>
-        <div>
-          <label className="text-sm font-medium">Form Label</label>
-          <p className="text-sm text-muted-foreground mt-1">Label - text-sm, font-medium</p>
-        </div>
-      </div>
-    ),
-  }
-
-  if (currentStep === 3) {
-    return (
-      <div className="min-h-screen bg-primary">
-        <ConfettiOverlay isActive={showConfetti} onComplete={handleConfettiComplete} />
-
-        <AppHeader />
-
-        <main className="p-6">
-          <div className="mb-6">
-            <Button variant="outline" onClick={handleBackToStepper} className="mb-4">
-              ← Back to Onboarding
-            </Button>
-            <h1 className="text-3xl font-bold text-white mb-2">Component Showcase</h1>
-            <p className="text-white/80 flex items-center gap-2">
-              Your first prompt could say something like, "get rid of the onboarding UX and show me a DHI utility view"
-              <Button
-                variant="secondary"
-                size="sm"
-                className="whitespace-nowrap flex items-center gap-1"
-                onClick={() => copyToClipboard("get rid of the onboarding UX and show me a DHI utility view")}
-              >
-                <Copy className="h-3 w-3 mr-2" />
-                Copy
-              </Button>
-            </p>
-          </div>
-
-          <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-            {componentCards.map((card, index) => (
-              <Card key={index} className="flex flex-col h-fit rounded-[var(--border-radius)] break-inside-avoid mb-4">
-                <CardContent className="flex-1 p-4">
-                  <h4 className="font-medium text-sm mb-2">{card.title}</h4>
-                  <p className="text-xs text-muted-foreground mb-4">{card.prompt}</p>
-
-                  <div className="bg-muted/30 rounded-md p-3 mb-4 flex items-center justify-center min-h-[60px]">
-                    {card.component}
-                  </div>
-                </CardContent>
-                <div className="p-4 pt-0 mt-auto">
-                  <Button variant="secondary" size="sm" className="w-full" onClick={() => copyToClipboard(card.prompt)}>
-                    {copiedPrompt === card.prompt ? (
-                      <>
-                        <Check className="h-3 w-3 mr-2" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3 w-3 mr-2" />
-                        Copy Prompt
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          {/* Typography showcase card - full width at bottom */}
-          <div className="mt-8">
-            <Card className="w-full rounded-[var(--border-radius)]">
-              <CardContent className="p-6">
-                <h4 className="font-medium text-lg mb-4">{typographyCard.title}</h4>
-                <p className="text-sm text-muted-foreground mb-6">{typographyCard.prompt}</p>
-
-                <div className="bg-muted/30 rounded-md p-6">{typographyCard.component}</div>
-
-                <div className="mt-4">
-                  <Button variant="secondary" onClick={() => copyToClipboard(typographyCard.prompt)}>
-                    {copiedPrompt === typographyCard.prompt ? (
-                      <>
-                        <Check className="h-3 w-3 mr-2" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3 w-3 mr-2" />
-                        Copy Prompt
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          {/* Footer */}
-          <footer className="mt-16 border-t border-white/20 pt-8">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid md:grid-cols-3 gap-8 mb-8">
-                {/* Logo and Badge */}
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center gap-3 mb-4">
-                    <img src="/sub-marks/subMarkWhite.svg" alt="Docker" className="h-8" />
-                    <Badge variant="outline" className="border-white/30 text-white">
-                      v0.dev + DDS
-                    </Badge>
-                  </div>
-                  <p className="text-white/70 text-sm">
-                    A proof of concept showcasing the integration of v0.dev with the Docker Design System.
-                  </p>
-                </div>
-
-                {/* Resources */}
-                <div>
-                  <h3 className="text-white font-medium mb-4">Resources</h3>
-                  <div className="space-y-2">
-                    <a
-                      href="https://v0.dev"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-white/70 hover:text-white text-sm transition-colors"
-                    >
-                      <Rocket className="mr-2 h-4 w-4" />
-                      v0.dev Platform
-                      <ExternalLink className="ml-auto h-3 w-3" />
-                    </a>
-                    <a
-                      href="https://github.com/docker/design"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-white/70 hover:text-white text-sm transition-colors"
-                    >
-                      <Github className="mr-2 h-4 w-4" />
-                      Docker Design GitHub
-                      <ExternalLink className="ml-auto h-3 w-3" />
-                    </a>
-                    <a
-                      href="#docs"
-                      className="flex items-center text-white/70 hover:text-white text-sm transition-colors"
-                    >
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      Documentation
-                    </a>
-                    <a
-                      href="#components"
-                      className="flex items-center text-white/70 hover:text-white text-sm transition-colors"
-                    >
-                      <Palette className="mr-2 h-4 w-4" />
-                      Design System
-                    </a>
-                  </div>
-                </div>
-
-                {/* Get Involved */}
-                <div className="flex justify-end">
-                  <Button variant="secondary" size="sm" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-                    ↑ Back to Top
-                  </Button>
-                </div>
-              </div>
-
-              {/* Bottom bar */}
-              <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center">
-                <div className="flex items-center gap-4 mb-4 md:mb-0">
-                  <div className="inline-flex items-center justify-center rounded-sm border border-white/30 px-2.5 py-0.5 text-xs font-semibold text-white">
-                    v0.1.0-alpha
-                  </div>
-                  <p className="text-xs text-white/60">&copy; {new Date().getFullYear()} Docker, Inc.</p>
-                </div>
-                <p className="text-xs text-white/60">Built with v0.dev + Docker Design System</p>
-              </div>
-            </div>
-          </footer>
-          <Dialog open={showWelcomeModal} onOpenChange={setShowWelcomeModal}>
-            <DialogContent className="sm:max-w-[500px] rounded-[var(--border-radius)]">
-              <DialogHeader className="text-center space-y-4">
-                <div className="flex justify-center">
-                  <Badge className="bg-primary text-primary-foreground px-3 py-1">v0.dev + DDS</Badge>
-                </div>
-                <DialogTitle className="text-2xl font-bold">Welcome to the Showcase, Dockhand! 🚢</DialogTitle>
-                <DialogDescription className="text-base leading-relaxed">
-                  You're now ready to build beautiful UI components with the power of v0.dev and Docker Design System.
-                  <br />
-                  <br />
-                  <strong>Copy any prompt below</strong> and paste it into v0.dev chat to generate components with
-                  perfect DDS styling.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex justify-center pt-2">
-                <Button onClick={() => setShowWelcomeModal(false)} size="lg">
-                  Start Building
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </main>
-      </div>
-    )
+  const handleImageAction = (action: string, imageName: string) => {
+    toast({
+      title: `${action} ${imageName}`,
+      description: `${action} operation initiated for ${imageName}`,
+    })
   }
 
   return (
-    <div className="h-screen bg-primary flex flex-col">
-      <AppHeader />
-
-      <main className="flex-1 p-6 min-h-0">
-        <div className="w-full h-full overflow-hidden">
-          <div
-            className="flex w-[300%] h-full transition-transform duration-300 ease-in-out"
-            style={{ transform: `translateX(-${currentStep * 33.333}%)` }}
-          >
-            {[0, 1, 2].map((index) => (
-              <div key={index} className="w-1/3 h-full px-3 flex-shrink-0">
-                <Card className="w-full h-full flex flex-col">
-                  <div className="py-3 px-6 flex-shrink-0">
-                    <h2 className="text-xl font-semibold">{steps[index].title}</h2>
-                  </div>
-
-                  <CardContent className="flex-1 p-6 overflow-y-auto min-h-0">{renderCardContent(index)}</CardContent>
-
-                  <div className="flex justify-between py-3 px-6 flex-shrink-0">
-                    <Button variant="outline" size="lg" disabled={currentStep === 0} onClick={handlePrevious}>
-                      Previous
-                    </Button>
-
-                    <Button size="lg" onClick={handleNext}>
-                      {currentStep === 2 ? "Get Started" : "Next"}
-                    </Button>
-                  </div>
-                </Card>
+    <div className={`min-h-screen bg-background ${theme === "dark" ? "dark" : ""}`}>
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-6">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-32 h-8">
+                <img src="/logo/LogoPrimary.svg" alt="Docker Hub" className="w-full h-full object-contain" />
               </div>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200">
+                AI Registry
+              </Badge>
+            </div>
+            <nav className="hidden md:flex items-center gap-6 text-sm">
+              <Button variant="ghost" size="sm">
+                Explore
+              </Button>
+              <Button variant="ghost" size="sm">
+                HDI Models
+              </Button>
+              <Button variant="ghost" size="sm">
+                MCP Protocols
+              </Button>
+              <Button variant="ghost" size="sm">
+                Community
+              </Button>
+              <Button variant="ghost" size="sm">
+                Docs
+              </Button>
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+            <Button variant="ghost" size="icon">
+              <Bell className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Separator orientation="vertical" className="h-6" />
+            <Button variant="outline" size="sm">
+              Sign In
+            </Button>
+            <Button size="sm">
+              <Plus className="mr-2 h-4 w-4" />
+              Publish
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-16 px-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20">
+        <div className="container mx-auto max-w-6xl text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="h-6 w-6 text-blue-600" />
+            <Badge variant="outline" className="bg-white/50 border-blue-200">
+              The AI Infrastructure Hub
+            </Badge>
+          </div>
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            Discover, Deploy & Scale AI
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            The world's largest registry of HDI-enabled models and MCP protocols. Hunt, gather, and deploy cutting-edge
+            AI infrastructure with the Docker ecosystem.
+          </p>
+
+          {/* Search Bar */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="flex gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Search HDI models, MCP protocols, AI agents..."
+                  className="pl-12 h-14 text-lg"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+              </div>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-48 h-14">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      <div className="flex items-center gap-2">
+                        <cat.icon className="h-4 w-4" />
+                        {cat.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button size="lg" className="h-14 px-8" onClick={handleSearch}>
+                <Search className="mr-2 h-5 w-5" />
+                Search
+              </Button>
+            </div>
+          </div>
+
+          {/* Trending Searches */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+            <span className="text-sm text-muted-foreground mr-2">Trending:</span>
+            {trendingSearches.map((search, index) => (
+              <Button
+                key={index}
+                variant="ghost"
+                size="sm"
+                className="h-8 text-xs bg-white/50 hover:bg-white/80"
+                onClick={() => setSearchQuery(search)}
+              >
+                {search}
+              </Button>
             ))}
           </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">12.4K+</div>
+              <div className="text-sm text-muted-foreground">AI Models</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">3.8K+</div>
+              <div className="text-sm text-muted-foreground">MCP Protocols</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">890M+</div>
+              <div className="text-sm text-muted-foreground">Downloads</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">45K+</div>
+              <div className="text-sm text-muted-foreground">Contributors</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-8 max-w-7xl">
+        {/* Categories & Filters */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-bold">Explore AI Registry</h2>
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <TrendingUp className="mr-1 h-3 w-3" />
+              Hot
+            </Badge>
+          </div>
+          <div className="flex items-center gap-3">
+            <Select value={selectedSort} onValueChange={setSelectedSort}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="trending">Trending</SelectItem>
+                <SelectItem value="downloads">Most Downloaded</SelectItem>
+                <SelectItem value="stars">Most Starred</SelectItem>
+                <SelectItem value="recent">Recently Updated</SelectItem>
+                <SelectItem value="community">Community Score</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm">
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
+            </Button>
+          </div>
+        </div>
+
+        {/* Category Tabs */}
+        <Tabs defaultValue="featured" className="mb-8">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:grid-cols-none lg:flex">
+            <TabsTrigger value="featured" className="flex items-center gap-2">
+              <Award className="h-4 w-4" />
+              Featured
+            </TabsTrigger>
+            <TabsTrigger value="hdi" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              HDI Models
+            </TabsTrigger>
+            <TabsTrigger value="mcp" className="flex items-center gap-2">
+              <Network className="h-4 w-4" />
+              MCP Protocols
+            </TabsTrigger>
+            <TabsTrigger value="trending" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Trending
+            </TabsTrigger>
+            <TabsTrigger value="new" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              New Releases
+            </TabsTrigger>
+            <TabsTrigger value="community" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Community
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="featured" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredImages.map((image) => (
+                <Card
+                  key={image.id}
+                  className="group hover:shadow-lg transition-all duration-200 border-2 hover:border-blue-200"
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage
+                            src={`/placeholder.svg?height=40&width=40&text=${image.author.charAt(0).toUpperCase()}`}
+                          />
+                          <AvatarFallback>{image.author.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                              {image.name}
+                            </CardTitle>
+                            {image.verified && <CheckCircle className="h-4 w-4 text-blue-600" />}
+                            {image.trending && (
+                              <Badge variant="secondary" className="bg-orange-100 text-orange-700 text-xs">
+                                <TrendingUp className="mr-1 h-3 w-3" />
+                                Trending
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">by {image.author}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Heart className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <CardDescription className="text-sm leading-relaxed">{image.description}</CardDescription>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1">
+                      {image.tags.map((tag, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+
+                    {/* AI Capabilities */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Cpu className="h-3 w-3" />
+                        AI Capabilities:
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {image.aiCapabilities.map((capability, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs bg-blue-50 text-blue-700">
+                            {capability}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Download className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">{image.downloads}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        <span className="font-medium">{image.stars.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Database className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{image.size}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{image.lastUpdated}</span>
+                      </div>
+                    </div>
+
+                    {/* Community Score */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Community Score</span>
+                        <span className="font-medium">{image.communityScore}/100</span>
+                      </div>
+                      <Progress value={image.communityScore} className="h-2" />
+                    </div>
+
+                    {/* Architecture Support */}
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Layers className="h-3 w-3" />
+                      {image.architecture.join(", ")}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2">
+                      <Button className="flex-1" onClick={() => handleImageAction("Pull", image.name)}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Pull
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleImageAction("Star", image.name)}>
+                        <Star className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleImageAction("Share", image.name)}>
+                        <Share className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="hdi" className="mt-6">
+            <div className="text-center py-12">
+              <Brain className="h-16 w-16 mx-auto mb-4 text-blue-600" />
+              <h3 className="text-xl font-semibold mb-2">HDI Models</h3>
+              <p className="text-muted-foreground mb-4">
+                Human-Docker Interface enabled AI models for seamless integration
+              </p>
+              <Button>
+                <ChevronRight className="mr-2 h-4 w-4" />
+                Explore HDI Models
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="mcp" className="mt-6">
+            <div className="text-center py-12">
+              <Network className="h-16 w-16 mx-auto mb-4 text-purple-600" />
+              <h3 className="text-xl font-semibold mb-2">MCP Protocols</h3>
+              <p className="text-muted-foreground mb-4">
+                Model Context Protocol implementations for AI agent communication
+              </p>
+              <Button>
+                <ChevronRight className="mr-2 h-4 w-4" />
+                Explore MCP Protocols
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="trending" className="mt-6">
+            <div className="text-center py-12">
+              <TrendingUp className="h-16 w-16 mx-auto mb-4 text-orange-600" />
+              <h3 className="text-xl font-semibold mb-2">Trending Now</h3>
+              <p className="text-muted-foreground mb-4">Most popular AI models and protocols this week</p>
+              <Button>
+                <ChevronRight className="mr-2 h-4 w-4" />
+                View Trending
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="new" className="mt-6">
+            <div className="text-center py-12">
+              <Sparkles className="h-16 w-16 mx-auto mb-4 text-green-600" />
+              <h3 className="text-xl font-semibold mb-2">New Releases</h3>
+              <p className="text-muted-foreground mb-4">Latest AI models and protocol updates</p>
+              <Button>
+                <ChevronRight className="mr-2 h-4 w-4" />
+                View New Releases
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="community" className="mt-6">
+            <div className="text-center py-12">
+              <Users className="h-16 w-16 mx-auto mb-4 text-indigo-600" />
+              <h3 className="text-xl font-semibold mb-2">Community Favorites</h3>
+              <p className="text-muted-foreground mb-4">Top-rated models by the AI developer community</p>
+              <Button>
+                <ChevronRight className="mr-2 h-4 w-4" />
+                Explore Community
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+            <Rocket className="h-12 w-12 mx-auto mb-4 text-blue-600" />
+            <h3 className="text-lg font-semibold mb-2">Deploy Instantly</h3>
+            <p className="text-muted-foreground mb-4">One-click deployment of AI models to your infrastructure</p>
+            <Button variant="outline">Learn More</Button>
+          </Card>
+
+          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+            <BookOpen className="h-12 w-12 mx-auto mb-4 text-green-600" />
+            <h3 className="text-lg font-semibold mb-2">Documentation</h3>
+            <p className="text-muted-foreground mb-4">Comprehensive guides for HDI and MCP integration</p>
+            <Button variant="outline">Read Docs</Button>
+          </Card>
+
+          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+            <Users className="h-12 w-12 mx-auto mb-4 text-purple-600" />
+            <h3 className="text-lg font-semibold mb-2">Join Community</h3>
+            <p className="text-muted-foreground mb-4">Connect with AI developers and contributors worldwide</p>
+            <Button variant="outline">Join Now</Button>
+          </Card>
         </div>
       </main>
 
-      <div className="flex justify-center py-5 flex-shrink-0">
-        <Stepper steps={steps.length} currentStep={currentStep} onStepClick={handleStepClick} />
-      </div>
+      <Toaster />
     </div>
   )
 }
