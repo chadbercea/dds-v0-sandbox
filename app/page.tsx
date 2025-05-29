@@ -1,31 +1,32 @@
 import { AppLayout, AppHeader } from "@/components/layout/app-layout"
-import { ContextShells } from "@/components/mcp/context-shells"
-import { TokenGraph } from "@/components/mcp/token-graph"
-import { PromptSurface } from "@/components/mcp/prompt-surface"
-import { RuntimePanel } from "@/components/mcp/runtime-panel"
-import { TraceWindow } from "@/components/mcp/trace-window"
-import { DeploymentControls } from "@/components/mcp/deployment-controls"
 
-export default function MCPRuntimePage() {
+export default function HomePage() {
   return (
     <AppLayout
       header={<AppHeader />}
-      leftPanel={<ContextShells />}
-      rightPanel={
-        <div className="space-y-4">
-          <RuntimePanel />
-          <TraceWindow />
+      leftPanel={
+        <div className="p-4">
+          <h4 className="font-medium mb-4">Left Panel</h4>
+          <p className="text-sm text-muted-foreground">Panel content goes here</p>
         </div>
       }
-      bottomPanel={<DeploymentControls />}
-    >
-      {/* Main Content: Token Graph + Prompt Surface */}
-      <div className="h-full flex flex-col">
-        <div className="flex-1 p-4">
-          <TokenGraph />
+      rightPanel={
+        <div className="p-4">
+          <h4 className="font-medium mb-4">Right Panel</h4>
+          <p className="text-sm text-muted-foreground">Panel content goes here</p>
         </div>
-        <div className="h-80 border-t">
-          <PromptSurface />
+      }
+      bottomPanel={
+        <div className="p-4">
+          <h4 className="font-medium mb-4">Bottom Panel</h4>
+          <p className="text-sm text-muted-foreground">Panel content goes here</p>
+        </div>
+      }
+    >
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Main Content Area</h1>
+          <p className="text-muted-foreground">Core panel interactions ready</p>
         </div>
       </div>
     </AppLayout>
