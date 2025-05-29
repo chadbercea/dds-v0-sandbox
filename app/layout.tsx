@@ -1,11 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
-import { NavigationProvider } from "@/components/layout/app-header"
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
+  title: "Docker Design System",
+  description: "A showcase of UI components for Docker",
   generator: "v0.dev",
 }
 
@@ -16,9 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <NavigationProvider>{children}</NavigationProvider>
-      </body>
+      <body className="font-sans">{children}</body>
     </html>
   )
 }
