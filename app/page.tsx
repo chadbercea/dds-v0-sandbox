@@ -1,4 +1,5 @@
 import { AppLayout, AppHeader } from "@/components/layout/app-layout"
+import { TokenGraph } from "@/components/mcp/token-graph"
 
 export default function HomePage() {
   return (
@@ -6,29 +7,24 @@ export default function HomePage() {
       header={<AppHeader />}
       leftPanel={
         <div className="p-4">
-          <h4 className="font-medium mb-4">Left Panel</h4>
-          <p className="text-sm text-muted-foreground">Panel content goes here</p>
+          <h4 className="font-medium mb-4">Context Shells</h4>
+          <p className="text-sm text-muted-foreground">MCP runtime contexts</p>
         </div>
       }
       rightPanel={
         <div className="p-4">
-          <h4 className="font-medium mb-4">Right Panel</h4>
-          <p className="text-sm text-muted-foreground">Panel content goes here</p>
+          <h4 className="font-medium mb-4">Agent Control</h4>
+          <p className="text-sm text-muted-foreground">Runtime controls</p>
         </div>
       }
       bottomPanel={
         <div className="p-4">
-          <h4 className="font-medium mb-4">Bottom Panel</h4>
-          <p className="text-sm text-muted-foreground">Panel content goes here</p>
+          <h4 className="font-medium mb-4">Deployment Controls</h4>
+          <p className="text-sm text-muted-foreground">Deploy context controls</p>
         </div>
       }
     >
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Main Content Area</h1>
-          <p className="text-muted-foreground">Core panel interactions ready</p>
-        </div>
-      </div>
+      <TokenGraph />
     </AppLayout>
   )
 }
