@@ -4,7 +4,7 @@ import { useState, createContext, useContext, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight } from "lucide-react"
+import { Menu, X, Pin, PinOff, ChevronUp, ChevronDown, PanelRight, Rocket } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -60,9 +60,9 @@ function UserAccountWidget() {
               <p className="text-sm font-medium truncate">John Doe</p>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-xs">
-                  Pro
+                  MCP Pro
                 </Badge>
-                <span className="text-xs text-muted-foreground truncate">Docker Team</span>
+                <span className="text-xs text-muted-foreground truncate">Runtime Admin</span>
               </div>
             </div>
           </div>
@@ -88,11 +88,11 @@ function UserAccountWidget() {
             </Button>
             <Button variant="ghost" className="w-full justify-start h-8 px-2">
               <CreditCard className="h-4 w-4 mr-2" />
-              Billing & Plans
+              MCP Billing
             </Button>
             <Button variant="ghost" className="w-full justify-start h-8 px-2">
               <Settings className="h-4 w-4 mr-2" />
-              Preferences
+              Runtime Config
             </Button>
             <Separator className="my-2" />
             <Button
@@ -112,9 +112,9 @@ function UserAccountWidget() {
 export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel }: AppLayoutProps) {
   const [leftPanelOpen, setLeftPanelOpen] = useState(false)
   const [rightPanelOpen, setRightPanelOpen] = useState(false)
-  const [leftPanelPinned, setLeftPanelPinned] = useState(false)
-  const [rightPanelPinned, setRightPanelPinned] = useState(false)
-  const [bottomPanelExpanded, setBottomPanelExpanded] = useState(false)
+  const [leftPanelPinned, setLeftPanelPinned] = useState(true) // Start pinned for demo
+  const [rightPanelPinned, setRightPanelPinned] = useState(true) // Start pinned for demo
+  const [bottomPanelExpanded, setBottomPanelExpanded] = useState(true) // Start expanded for demo
   const [leftPanelWidth, setLeftPanelWidth] = useState(320) // md default
   const [rightPanelWidth, setRightPanelWidth] = useState(320) // md default
 
@@ -218,7 +218,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
             >
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b flex items-center justify-between">
-                  <h3 className="font-medium">Navigation</h3>
+                  <h3 className="font-medium">MCP Runtime</h3>
                   <Button variant="ghost" size="icon" onClick={toggleLeftPanelPin} className="h-8 w-8">
                     <PinOff className="h-4 w-4" />
                   </Button>
@@ -272,7 +272,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
             >
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b flex items-center justify-between">
-                  <h3 className="font-medium">Right Panel</h3>
+                  <h3 className="font-medium">Agent Control</h3>
                   <Button variant="ghost" size="icon" onClick={toggleRightPanelPin} className="h-8 w-8">
                     <PinOff className="h-4 w-4" />
                   </Button>
@@ -293,7 +293,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
           <SheetContent side="left" className="p-0 [&>button]:hidden" style={{ width: leftPanelWidth }}>
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="font-medium">Navigation</h3>
+                <h3 className="font-medium">MCP Runtime</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon" onClick={toggleLeftPanelPin} className="h-8 w-8">
                     <Pin className="h-4 w-4" />
@@ -314,7 +314,7 @@ export function AppLayout({ children, header, leftPanel, rightPanel, bottomPanel
           <SheetContent side="right" className="p-0 [&>button]:hidden" style={{ width: rightPanelWidth }}>
             <div className="h-full flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="font-medium">Right Panel</h3>
+                <h3 className="font-medium">Agent Control</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon" onClick={toggleRightPanelPin} className="h-8 w-8">
                     <Pin className="h-4 w-4" />
@@ -343,10 +343,17 @@ function AppHeader() {
         <Button variant="ghost" size="icon" onClick={toggleLeftPanel}>
           <Menu className="h-5 w-5" />
         </Button>
-        <img src="/sub-marks/subMarkPrimary.svg" alt="Docker" className="h-8 w-auto" />
+        <img src="/sub-marks/subMarkPrimary.svg" alt="Docker MCP" className="h-8 w-auto" />
+        <Badge variant="outline" className="text-xs">
+          MCP Runtime 2035
+        </Badge>
       </div>
 
       <div className="flex items-center gap-2">
+        <Button variant="default" className="flex items-center gap-2">
+          <Rocket className="h-4 w-4" />
+          Deploy Context
+        </Button>
         <Button variant="ghost" size="icon" onClick={toggleRightPanel}>
           <PanelRight className="h-5 w-5" />
         </Button>
